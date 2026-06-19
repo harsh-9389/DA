@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OOP in Python — 3-Hour Class Guide</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --bg2: #161b27;
+    --bg3: #1e2536;
+    --border: #2a3147;
+    --text: #e2e8f0;
+    --muted: #8892a4;
+    --purple: #a78bfa;
+    --purple-dim: #1e1a35;
+    --blue: #60a5fa;
+    --blue-dim: #172035;
+    --teal: #34d399;
+    --teal-dim: #0d2620;
+    --coral: #f87171;
+    --coral-dim: #2a1215;
+    --amber: #fbbf24;
+    --amber-dim: #2a1f07;
+    --green: #86efac;
+    --code-bg: #0d1117;
+    --code-border: #30363d;
+    --tag-bg: #1e2536;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+  .page { max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* Header */
+  .hero { text-align: center; padding: 48px 0 40px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+  .hero h1 { font-size: 2.2rem; font-weight: 700; color: var(--purple); letter-spacing: -0.5px; margin-bottom: 8px; }
+  .hero p { color: var(--muted); font-size: 1rem; }
+  .pill-row { display: flex; gap: 8px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+  .pill { padding: 4px 14px; border-radius: 99px; font-size: 12px; font-weight: 600; letter-spacing: 0.3px; }
+  .pill.purple { background: var(--purple-dim); color: var(--purple); border: 1px solid #3d2f6a; }
+  .pill.blue   { background: var(--blue-dim);   color: var(--blue);   border: 1px solid #1a3257; }
+  .pill.teal   { background: var(--teal-dim);   color: var(--teal);   border: 1px solid #0e3828; }
+  .pill.coral  { background: var(--coral-dim);  color: var(--coral);  border: 1px solid #3d1a1a; }
+
+  /* Session header */
+  .session-header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 20px 24px; border-radius: 12px;
+    margin: 48px 0 24px;
+    border-left: 4px solid;
+  }
+  .session-header.purple { background: var(--purple-dim); border-color: var(--purple); }
+  .session-header.blue   { background: var(--blue-dim);   border-color: var(--blue); }
+  .session-header.coral  { background: var(--coral-dim);  border-color: var(--coral); }
+  .session-header .badge {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    padding: 3px 10px; border-radius: 99px; white-space: nowrap;
+  }
+  .session-header.purple .badge { background: var(--purple); color: #1a0e35; }
+  .session-header.blue   .badge { background: var(--blue);   color: #0a1a35; }
+  .session-header.coral  .badge { background: var(--coral);  color: #2a0a0a; }
+  .session-header .info h2 { font-size: 1.15rem; font-weight: 600; }
+  .session-header .info p  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* Topic block */
+  .topic { margin-bottom: 36px; }
+  .topic-title {
+    font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--muted); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .topic-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .topic h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 8px; }
+  .topic p  { color: var(--muted); font-size: 0.93rem; margin-bottom: 12px; line-height: 1.75; }
+
+  /* Concept callout */
+  .concept {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 18px; margin-bottom: 14px;
+    font-size: 0.88rem; color: var(--muted);
+  }
+  .concept strong { color: var(--text); }
+
+  /* Code block */
+  .code-wrap { margin: 14px 0 20px; border-radius: 10px; overflow: hidden; border: 1px solid var(--code-border); }
+  .code-label {
+    background: #161b22; padding: 7px 16px;
+    font-size: 11px; font-weight: 600; color: var(--muted);
+    letter-spacing: 0.5px; border-bottom: 1px solid var(--code-border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .code-label span { font-size: 11px; color: #3d6b9c; }
+  pre {
+    background: var(--code-bg); padding: 20px;
+    overflow-x: auto; font-size: 13.5px;
+    font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+    line-height: 1.65; tab-size: 4;
+  }
+  /* Syntax colors */
+  .kw  { color: #ff7b72; }   /* keywords */
+  .fn  { color: #d2a8ff; }   /* functions/methods */
+  .cls { color: #ffa657; }   /* class names */
+  .str { color: #a5d6ff; }   /* strings */
+  .cm  { color: #6e7681; }   /* comments */
+  .num { color: #79c0ff; }   /* numbers */
+  .dec { color: #f2cc60; }   /* decorators */
+  .blt { color: #e6edf3; }   /* builtins */
+
+  /* Output block */
+  .output-wrap { margin: -8px 0 20px; border-radius: 0 0 10px 10px; overflow: hidden; border: 1px solid var(--code-border); border-top: none; }
+  .output-label { background: #0a1a0a; padding: 6px 16px; font-size: 11px; color: #3d7a3d; font-weight: 600; letter-spacing: 0.5px; border-bottom: 1px solid #1a3a1a; }
+  .output pre { background: #050d05; color: #86efac; font-size: 13px; padding: 14px 20px; }
+
+  /* Break card */
+  .break-card {
+    background: var(--teal-dim); border: 1px solid #1a4a3a;
+    border-radius: 10px; padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+    margin: 36px 0; color: var(--teal); font-weight: 600; font-size: 0.9rem;
+  }
+  .break-card span { color: var(--muted); font-weight: 400; font-size: 0.85rem; margin-left: auto; }
+
+  /* Key insight */
+  .insight {
+    background: var(--amber-dim); border-left: 3px solid var(--amber);
+    border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 14px 0;
+    font-size: 0.88rem; color: #d4a017;
+  }
+  .insight strong { color: var(--amber); }
+
+  /* Mini project */
+  .project-box {
+    background: var(--coral-dim); border: 1px solid #5a2020;
+    border-radius: 12px; padding: 20px 24px; margin: 24px 0;
+  }
+  .project-box h3 { color: var(--coral); font-size: 1rem; margin-bottom: 6px; }
+  .project-box p  { color: #d47070; font-size: 0.88rem; margin-bottom: 14px; }
+  .todo-list { list-style: none; }
+  .todo-list li { font-size: 0.88rem; color: var(--muted); padding: 4px 0; }
+  .todo-list li::before { content: '☐ '; color: var(--coral); }
+
+  /* Divider */
+  hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
+
+  /* Wrap-up */
+  .wrapup { background: var(--bg2); border-radius: 12px; padding: 24px; margin-top: 48px; border: 1px solid var(--border); }
+  .wrapup h2 { font-size: 1.05rem; color: var(--green); margin-bottom: 12px; }
+  .wrapup ul { list-style: none; }
+  .wrapup ul li { font-size: 0.9rem; color: var(--muted); padding: 5px 0; }
+  .wrapup ul li::before { content: '✓ '; color: var(--green); }
+
+  @media print {
+    body { background: #fff; color: #111; }
+    .code-wrap, pre { background: #f6f8fa !important; color: #24292e !important; border: 1px solid #ddd !important; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Object-Oriented Programming in Python</h1>
+    <p>Complete 3-hour class guide with code examples · B.Tech 2nd Year</p>
+    <div class="pill-row">
+      <span class="pill purple">Session 1 · Foundations · 50 min</span>
+      <span class="pill blue">Session 2 · Three Pillars · 50 min</span>
+      <span class="pill coral">Session 3 · Advanced + Hands-on · 40 min</span>
+    </div>
+  </div>
+
+  <!-- WARM UP -->
+  <div class="topic">
+    <div class="topic-title">Warm-up · 0:00–0:10</div>
+    <h3>Why OOP?</h3>
+    <p>Start with a relatable analogy. A <strong>class</strong> is a blueprint (like an architectural plan). An <strong>object</strong> is a house built from that plan. 100 houses can be built from one plan — each with its own color, owner, and furniture.</p>
+    <div class="concept">
+      <strong>Procedural vs OOP:</strong> Procedural code is a list of instructions. OOP organises code around <em>things</em> (objects) that have <em>state</em> (attributes) and <em>behaviour</em> (methods). Easier to extend, reuse, and maintain.
+    </div>
+    <p style="margin-top:10px">Today's thread: you'll build a <strong>Student grade tracker</strong> that grows across all three sessions.</p>
+  </div>
+
+  <hr>
+
+  <!-- SESSION 1 -->
+  <div class="session-header purple">
+    <div class="badge">Session 1</div>
+    <div class="info">
+      <h2>Foundations — Classes, Objects, Methods</h2>
+      <p>0:10 – 1:00 &nbsp;·&nbsp; 50 minutes</p>
+    </div>
+  </div>
+
+  <!-- 1.1 Classes & Objects -->
+  <div class="topic">
+    <div class="topic-title">Topic 1 · 10 min</div>
+    <h3>Classes and Objects</h3>
+    <p>A <strong>class</strong> defines structure. An <strong>object</strong> is an instance of that class. <code>__init__</code> is the constructor — it runs when an object is created. <code>self</code> refers to the current object instance.</p>
+    <div class="code-wrap">
+      <div class="code-label">example_1_class_object.py <span>Python 3</span></div>
+      <pre><span class="cm"># Define a class</span>
+<span class="kw">class</span> <span class="cls">Student</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="blt">self</span>, name, roll_no):
+        <span class="blt">self</span>.name    = name        <span class="cm"># instance attribute</span>
+        <span class="blt">self</span>.roll_no = roll_no
+        <span class="blt">self</span>.marks   = []          <span class="cm"># starts empty for every student</span>
+
+<span class="cm"># Create objects (instances)</span>
+s1 = <span class="cls">Student</span>(<span class="str">"Aanya"</span>, <span class="num">101</span>)
+s2 = <span class="cls">Student</span>(<span class="str">"Rohan"</span>, <span class="num">102</span>)
+
+<span class="fn">print</span>(s1.name)      <span class="cm"># Aanya</span>
+<span class="fn">print</span>(s2.roll_no)   <span class="cm"># 102</span>
+<span class="fn">print</span>(s1 <span class="kw">is</span> s2)     <span class="cm"># False — they are different objects</span></pre>
+    </div>
+    <div class="insight"><strong>Ask the class:</strong> What happens if two students have the same roll number? (introduces need for validation — teaser for encapsulation)</div>
+  </div>
+
+  <!-- 1.2 Instance vs Class variables -->
+  <div class="topic">
+    <div class="topic-title">Topic 2 · 8 min</div>
+    <h3>Instance vs Class Variables</h3>
+    <p><strong>Instance variables</strong> are unique per object (set via <code>self</code>). <strong>Class variables</strong> are shared across all instances of the class.</p>
+    <div class="code-wrap">
+      <div class="code-label">example_2_variables.py</div>
+      <pre><span class="kw">class</span> <span class="cls">Student</span>:
+    school_name = <span class="str">"IIT Delhi"</span>    <span class="cm"># class variable — shared by ALL students</span>
+    total_students = <span class="num">0</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="blt">self</span>, name, roll_no):
+        <span class="blt">self</span>.name    = name          <span class="cm"># instance variable — unique per student</span>
+        <span class="blt">self</span>.roll_no = roll_no
+        <span class="cls">Student</span>.total_students += <span class="num">1</span>  <span class="cm"># update class variable on each new object</span>
+
+s1 = <span class="cls">Student</span>(<span class="str">"Aanya"</span>, <span class="num">101</span>)
+s2 = <span class="cls">Student</span>(<span class="str">"Rohan"</span>, <span class="num">102</span>)
+
+<span class="fn">print</span>(s1.school_name)           <span class="cm"># IIT Delhi</span>
+<span class="fn">print</span>(<span class="cls">Student</span>.school_name)      <span class="cm"># IIT Delhi  (same thing)</span>
+<span class="fn">print</span>(<span class="cls">Student</span>.total_students)   <span class="cm"># 2</span>
+
+<span class="cm"># Modifying class variable via instance creates a NEW instance variable — tricky!</span>
+s1.school_name = <span class="str">"NIT Trichy"</span>
+<span class="fn">print</span>(s1.school_name)           <span class="cm"># NIT Trichy  (instance's own copy)</span>
+<span class="fn">print</span>(s2.school_name)           <span class="cm"># IIT Delhi   (class variable unchanged)</span></pre>
+    </div>
+    <div class="insight"><strong>Common trap:</strong> Mutable class variables (lists, dicts) are shared — modifying them on one instance affects all. Demo this live to drive the point home.</div>
+  </div>
+
+  <!-- 1.3 Methods -->
+  <div class="topic">
+    <div class="topic-title">Topic 3 · 10 min</div>
+    <h3>Instance, Class, and Static Methods</h3>
+    <div class="code-wrap">
+      <div class="code-label">example_3_methods.py</div>
+      <pre><span class="kw">class</span> <span class="cls">Student</span>:
+    school_name = <span class="str">"IIT Delhi"</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="blt">self</span>, name, roll_no):
+        <span class="blt">self</span>.name    = name
+        <span class="blt">self</span>.roll_no = roll_no
+        <span class="blt">self</span>.marks   = []
+
+    <span class="cm"># ── Instance method: operates on a specific object</span>
+    <span class="kw">def</span> <span class="fn">add_mark</span>(<span class="blt">self</span>, mark):
+        <span class="blt">self</span>.marks.append(mark)
+
+    <span class="kw">def</span> <span class="fn">average</span>(<span class="blt">self</span>):
+        <span class="kw">if not</span> <span class="blt">self</span>.marks:
+            <span class="kw">return</span> <span class="num">0</span>
+        <span class="kw">return</span> <span class="fn">sum</span>(<span class="blt">self</span>.marks) / <span class="fn">len</span>(<span class="blt">self</span>.marks)
+
+    <span class="cm"># ── Class method: operates on the class itself (not one object)</span>
+    <span class="dec">@classmethod</span>
+    <span class="kw">def</span> <span class="fn">change_school</span>(<span class="blt">cls</span>, new_name):
+        <span class="blt">cls</span>.school_name = new_name
+
+    <span class="cm"># ── Static method: utility — no access to self or cls</span>
+    <span class="dec">@staticmethod</span>
+    <span class="kw">def</span> <span class="fn">is_passing</span>(mark):
+        <span class="kw">return</span> mark >= <span class="num">40</span>
+
+
+s1 = <span class="cls">Student</span>(<span class="str">"Aanya"</span>, <span class="num">101</span>)
+s1.add_mark(<span class="num">78</span>)
+s1.add_mark(<span class="num">85</span>)
+<span class="fn">print</span>(s1.average())                    <span class="cm"># 81.5</span>
+<span class="fn">print</span>(<span class="cls">Student</span>.is_passing(<span class="num">35</span>))          <span class="cm"># False</span>
+<span class="cls">Student</span>.change_school(<span class="str">"NIT Surathkal"</span>)
+<span class="fn">print</span>(s1.school_name)                  <span class="cm"># NIT Surathkal</span></pre>
+    </div>
+  </div>
+
+  <!-- 1.4 Dunder methods -->
+  <div class="topic">
+    <div class="topic-title">Topic 4 · 7 min</div>
+    <h3>Dunder (Magic) Methods</h3>
+    <p>Python calls these automatically in specific situations. They let your class integrate naturally with Python syntax.</p>
+    <div class="code-wrap">
+      <div class="code-label">example_4_dunder.py</div>
+      <pre><span class="kw">class</span> <span class="cls">Student</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="blt">self</span>, name, roll_no):
+        <span class="blt">self</span>.name    = name
+        <span class="blt">self</span>.roll_no = roll_no
+        <span class="blt">self</span>.marks   = []
+
+    <span class="cm"># Called by print() and str()</span>
+    <span class="kw">def</span> <span class="fn">__str__</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="str">f"Student({self.name}, Roll: {self.roll_no})"</span>
+
+    <span class="cm"># Called in the REPL / repr() — for developers</span>
+    <span class="kw">def</span> <span class="fn">__repr__</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="str">f"Student(name={self.name!r}, roll_no={self.roll_no!r})"</span>
+
+    <span class="cm"># Called by len()</span>
+    <span class="kw">def</span> <span class="fn">__len__</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="fn">len</span>(<span class="blt">self</span>.marks)
+
+    <span class="cm"># Called by == operator</span>
+    <span class="kw">def</span> <span class="fn">__eq__</span>(<span class="blt">self</span>, other):
+        <span class="kw">return</span> <span class="blt">self</span>.roll_no == other.roll_no
+
+
+s1 = <span class="cls">Student</span>(<span class="str">"Aanya"</span>, <span class="num">101</span>)
+s1.marks = [<span class="num">78</span>, <span class="num">85</span>, <span class="num">91</span>]
+<span class="fn">print</span>(s1)           <span class="cm"># Student(Aanya, Roll: 101)</span>
+<span class="fn">print</span>(<span class="fn">len</span>(s1))      <span class="cm"># 3  (number of marks)</span>
+s2 = <span class="cls">Student</span>(<span class="str">"Rohan"</span>, <span class="num">101</span>)
+<span class="fn">print</span>(s1 == s2)     <span class="cm"># True  (same roll number)</span></pre>
+    </div>
+  </div>
+
+  <!-- 1.5 Live code -->
+  <div class="topic">
+    <div class="topic-title">Live Code · 10 min</div>
+    <h3>Build it together: Complete Student class</h3>
+    <p>Type this out with the class. Ask students to predict the output before running each line.</p>
+    <div class="code-wrap">
+      <div class="code-label">live_code_session1.py</div>
+      <pre><span class="kw">class</span> <span class="cls">Student</span>:
+    school_name    = <span class="str">"My College"</span>
+    total_students = <span class="num">0</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="blt">self</span>, name, roll_no):
+        <span class="blt">self</span>.name    = name
+        <span class="blt">self</span>.roll_no = roll_no
+        <span class="blt">self</span>.marks   = []
+        <span class="cls">Student</span>.total_students += <span class="num">1</span>
+
+    <span class="kw">def</span> <span class="fn">add_mark</span>(<span class="blt">self</span>, subject, mark):
+        <span class="blt">self</span>.marks.append({<span class="str">"subject"</span>: subject, <span class="str">"mark"</span>: mark})
+
+    <span class="kw">def</span> <span class="fn">average</span>(<span class="blt">self</span>):
+        <span class="kw">if not</span> <span class="blt">self</span>.marks: <span class="kw">return</span> <span class="num">0.0</span>
+        <span class="kw">return</span> <span class="fn">sum</span>(m[<span class="str">"mark"</span>] <span class="kw">for</span> m <span class="kw">in</span> <span class="blt">self</span>.marks) / <span class="fn">len</span>(<span class="blt">self</span>.marks)
+
+    <span class="kw">def</span> <span class="fn">grade</span>(<span class="blt">self</span>):
+        avg = <span class="blt">self</span>.average()
+        <span class="kw">if</span>   avg >= <span class="num">90</span>: <span class="kw">return</span> <span class="str">"A+"</span>
+        <span class="kw">elif</span> avg >= <span class="num">75</span>: <span class="kw">return</span> <span class="str">"A"</span>
+        <span class="kw">elif</span> avg >= <span class="num">60</span>: <span class="kw">return</span> <span class="str">"B"</span>
+        <span class="kw">elif</span> avg >= <span class="num">40</span>: <span class="kw">return</span> <span class="str">"C"</span>
+        <span class="kw">else</span>:          <span class="kw">return</span> <span class="str">"F"</span>
+
+    <span class="kw">def</span> <span class="fn">report</span>(<span class="blt">self</span>):
+        lines = [<span class="str">f"=== Report: {self.name} (Roll {self.roll_no}) ==="</span>]
+        <span class="kw">for</span> m <span class="kw">in</span> <span class="blt">self</span>.marks:
+            lines.append(<span class="str">f"  {m['subject']}: {m['mark']}"</span>)
+        lines.append(<span class="str">f"  Average: {self.average():.1f}  |  Grade: {self.grade()}"</span>)
+        <span class="kw">return</span> <span class="str">"\n"</span>.join(lines)
+
+    <span class="kw">def</span> <span class="fn">__str__</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="str">f"Student({self.name}, {self.grade()})"</span>
+
+
+<span class="cm"># --- Test it ---</span>
+s1 = <span class="cls">Student</span>(<span class="str">"Aanya"</span>, <span class="num">101</span>)
+s1.add_mark(<span class="str">"Maths"</span>, <span class="num">88</span>)
+s1.add_mark(<span class="str">"Physics"</span>, <span class="num">74</span>)
+s1.add_mark(<span class="str">"Python"</span>, <span class="num">95</span>)
+
+<span class="fn">print</span>(s1.report())</pre>
+    </div>
+    <div class="output-wrap">
+      <div class="output-label">Output</div>
+      <pre>=== Report: Aanya (Roll 101) ===
+  Maths: 88
+  Physics: 74
+  Python: 95
+  Average: 85.7  |  Grade: A</pre>
+    </div>
+  </div>
+
+  <!-- BREAK 1 -->
+  <div class="break-card">
+    ☕ Break <span>1:00 – 1:10 · 10 minutes</span>
+  </div>
+
+  <!-- SESSION 2 -->
+  <div class="session-header blue">
+    <div class="badge">Session 2</div>
+    <div class="info">
+      <h2>The Three Pillars — Encapsulation, Inheritance, Polymorphism</h2>
+      <p>1:10 – 2:00 &nbsp;·&nbsp; 50 minutes</p>
+    </div>
+  </div>
+
+  <!-- 2.1 Encapsulation -->
+  <div class="topic">
+    <div class="topic-title">Topic 1 · 12 min</div>
+    <h3>Encapsulation</h3>
+    <p>Bundling data + methods together and controlling access. Python uses naming conventions (no true private), but the intent is enforced by convention and properties.</p>
+    <div class="code-wrap">
+      <div class="code-label">example_5_encapsulation.py</div>
+      <pre><span class="kw">class</span> <span class="cls">Student</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="blt">self</span>, name, roll_no):
+        <span class="blt">self</span>.name     = name          <span class="cm"># public — access freely</span>
+        <span class="blt">self</span>._section = <span class="str">"A"</span>          <span class="cm"># protected — internal use, but accessible</span>
+        <span class="blt">self</span>.__roll   = roll_no       <span class="cm"># private — name-mangled to _Student__roll</span>
+        <span class="blt">self</span>.__marks  = []
+
+    <span class="cm"># Property: looks like attribute, behaves like method</span>
+    <span class="dec">@property</span>
+    <span class="kw">def</span> <span class="fn">roll_no</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="blt">self</span>.__roll
+
+    <span class="dec">@roll_no.setter</span>
+    <span class="kw">def</span> <span class="fn">roll_no</span>(<span class="blt">self</span>, value):
+        <span class="kw">if not</span> (<span class="num">100</span> &lt;= value &lt;= <span class="num">999</span>):
+            <span class="kw">raise</span> <span class="cls">ValueError</span>(<span class="str">"Roll number must be 100–999"</span>)
+        <span class="blt">self</span>.__roll = value
+
+    <span class="kw">def</span> <span class="fn">add_mark</span>(<span class="blt">self</span>, mark):
+        <span class="kw">if not</span> (<span class="num">0</span> &lt;= mark &lt;= <span class="num">100</span>):
+            <span class="kw">raise</span> <span class="cls">ValueError</span>(<span class="str">f"Invalid mark: {mark}"</span>)
+        <span class="blt">self</span>.__marks.append(mark)
+
+    <span class="kw">def</span> <span class="fn">get_marks</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="fn">tuple</span>(<span class="blt">self</span>.__marks)   <span class="cm"># return copy, not the list itself</span>
+
+
+s = <span class="cls">Student</span>(<span class="str">"Aanya"</span>, <span class="num">101</span>)
+<span class="fn">print</span>(s.roll_no)        <span class="cm"># 101  (via property getter)</span>
+s.roll_no = <span class="num">205</span>          <span class="cm"># calls setter — validates!</span>
+s.add_mark(<span class="num">88</span>)
+<span class="cm"># s.__marks             # AttributeError — good!</span>
+<span class="fn">print</span>(s.get_marks())    <span class="cm"># (88,)</span>
+
+<span class="kw">try</span>:
+    s.roll_no = <span class="num">5</span>        <span class="cm"># triggers validation</span>
+<span class="kw">except</span> <span class="cls">ValueError</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(e)             <span class="cm"># Roll number must be 100–999</span></pre>
+    </div>
+  </div>
+
+  <!-- 2.2 Inheritance -->
+  <div class="topic">
+    <div class="topic-title">Topic 2 · 12 min</div>
+    <h3>Inheritance</h3>
+    <p>A child class inherits all attributes and methods of its parent. Use <code>super()</code> to call the parent's <code>__init__</code>. Child can add new methods or <strong>override</strong> existing ones.</p>
+    <div class="code-wrap">
+      <div class="code-label">example_6_inheritance.py</div>
+      <pre><span class="cm"># ── Base class</span>
+<span class="kw">class</span> <span class="cls">Student</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="blt">self</span>, name, roll_no):
+        <span class="blt">self</span>.name    = name
+        <span class="blt">self</span>.roll_no = roll_no
+        <span class="blt">self</span>.marks   = []
+
+    <span class="kw">def</span> <span class="fn">add_mark</span>(<span class="blt">self</span>, mark): <span class="blt">self</span>.marks.append(mark)
+    <span class="kw">def</span> <span class="fn">average</span>(<span class="blt">self</span>):        <span class="kw">return</span> <span class="fn">sum</span>(<span class="blt">self</span>.marks)/<span class="fn">len</span>(<span class="blt">self</span>.marks) <span class="kw">if</span> <span class="blt">self</span>.marks <span class="kw">else</span> <span class="num">0</span>
+    <span class="kw">def</span> <span class="fn">describe</span>(<span class="blt">self</span>):        <span class="kw">return</span> <span class="str">f"UG Student: {self.name}"</span>
+
+
+<span class="cm"># ── Derived class: inherits from Student</span>
+<span class="kw">class</span> <span class="cls">GradStudent</span>(<span class="cls">Student</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="blt">self</span>, name, roll_no, thesis_title):
+        <span class="fn">super</span>().__init__(name, roll_no)   <span class="cm"># call parent __init__</span>
+        <span class="blt">self</span>.thesis = thesis_title
+        <span class="blt">self</span>.thesis_submitted = <span class="kw">False</span>
+
+    <span class="cm"># Override the parent method</span>
+    <span class="kw">def</span> <span class="fn">describe</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="str">f"PG Student: {self.name} | Thesis: {self.thesis}"</span>
+
+    <span class="cm"># New method specific to GradStudent</span>
+    <span class="kw">def</span> <span class="fn">submit_thesis</span>(<span class="blt">self</span>):
+        <span class="blt">self</span>.thesis_submitted = <span class="kw">True</span>
+        <span class="kw">return</span> <span class="str">f"{self.name}'s thesis submitted!"</span>
+
+
+<span class="cm"># ── Multilevel: PhD inherits from GradStudent</span>
+<span class="kw">class</span> <span class="cls">PhDStudent</span>(<span class="cls">GradStudent</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="blt">self</span>, name, roll_no, thesis_title, guide):
+        <span class="fn">super</span>().__init__(name, roll_no, thesis_title)
+        <span class="blt">self</span>.guide = guide
+
+    <span class="kw">def</span> <span class="fn">describe</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="str">f"PhD: {self.name} | Guide: {self.guide}"</span>
+
+
+<span class="cm"># --- Test ---</span>
+ug  = <span class="cls">Student</span>(<span class="str">"Aanya"</span>, <span class="num">101</span>)
+pg  = <span class="cls">GradStudent</span>(<span class="str">"Rohan"</span>, <span class="num">201</span>, <span class="str">"ML in Healthcare"</span>)
+phd = <span class="cls">PhDStudent</span>(<span class="str">"Priya"</span>, <span class="num">301</span>, <span class="str">"Quantum ML"</span>, <span class="str">"Dr. Sharma"</span>)
+
+<span class="fn">print</span>(ug.describe())      <span class="cm"># UG Student: Aanya</span>
+<span class="fn">print</span>(pg.describe())      <span class="cm"># PG Student: Rohan | Thesis: ML in Healthcare</span>
+<span class="fn">print</span>(phd.describe())     <span class="cm"># PhD: Priya | Guide: Dr. Sharma</span>
+
+pg.add_mark(<span class="num">88</span>)           <span class="cm"># inherited from Student</span>
+<span class="fn">print</span>(pg.average())       <span class="cm"># 88.0</span>
+
+<span class="fn">print</span>(<span class="fn">isinstance</span>(phd, <span class="cls">Student</span>))   <span class="cm"># True — PhDStudent IS-A Student</span></pre>
+    </div>
+  </div>
+
+  <!-- 2.3 Polymorphism -->
+  <div class="topic">
+    <div class="topic-title">Topic 3 · 10 min</div>
+    <h3>Polymorphism</h3>
+    <p>"Many forms." The same method name behaves differently depending on the object. Python achieves this through method overriding and duck typing — if it has the right method, Python doesn't care about the type.</p>
+    <div class="code-wrap">
+      <div class="code-label">example_7_polymorphism.py</div>
+      <pre><span class="cm"># ── Method overriding (runtime polymorphism)</span>
+<span class="kw">def</span> <span class="fn">print_info</span>(person):
+    <span class="cm"># Works for Student, GradStudent, PhDStudent — any object with .describe()</span>
+    <span class="fn">print</span>(person.describe())
+
+students = [
+    <span class="cls">Student</span>(<span class="str">"Aanya"</span>, <span class="num">101</span>),
+    <span class="cls">GradStudent</span>(<span class="str">"Rohan"</span>, <span class="num">201</span>, <span class="str">"AI Ethics"</span>),
+    <span class="cls">PhDStudent</span>(<span class="str">"Priya"</span>, <span class="num">301</span>, <span class="str">"Quantum ML"</span>, <span class="str">"Dr. Sharma"</span>)
+]
+
+<span class="kw">for</span> s <span class="kw">in</span> students:
+    <span class="fn">print_info</span>(s)   <span class="cm"># same call, different behaviour</span>
+
+<span class="cm"># Output:
+# UG Student: Aanya
+# PG Student: Rohan | Thesis: AI Ethics
+# PhD: Priya | Guide: Dr. Sharma</span>
+
+
+<span class="cm"># ── Duck typing — "If it walks like a duck, it's a duck"</span>
+<span class="kw">class</span> <span class="cls">Professor</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="blt">self</span>, name): <span class="blt">self</span>.name = name
+    <span class="kw">def</span> <span class="fn">describe</span>(<span class="blt">self</span>):         <span class="kw">return</span> <span class="str">f"Professor: {self.name}"</span>
+
+<span class="cm"># Professor is NOT a Student, but print_info still works!</span>
+<span class="fn">print_info</span>(<span class="cls">Professor</span>(<span class="str">"Dr. Mehta"</span>))   <span class="cm"># Professor: Dr. Mehta</span></pre>
+    </div>
+    <div class="insight"><strong>Key idea:</strong> Python doesn't do type checks — it checks for the <em>method's existence</em> at runtime. This is why Python functions are flexible by design.</div>
+  </div>
+
+  <!-- 2.4 Live code Session 2 -->
+  <div class="topic">
+    <div class="topic-title">Live Code · 11 min</div>
+    <h3>Extend the project: GradStudent with thesis validation</h3>
+    <div class="code-wrap">
+      <div class="code-label">live_code_session2.py</div>
+      <pre><span class="kw">class</span> <span class="cls">GradStudent</span>(<span class="cls">Student</span>):      <span class="cm"># Student from Session 1</span>
+    _MAX_CHAPTERS = <span class="num">8</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="blt">self</span>, name, roll_no, thesis_title, advisor):
+        <span class="fn">super</span>().__init__(name, roll_no)
+        <span class="blt">self</span>.__thesis  = thesis_title
+        <span class="blt">self</span>.advisor   = advisor
+        <span class="blt">self</span>.__chapters = <span class="num">0</span>
+
+    <span class="dec">@property</span>
+    <span class="kw">def</span> <span class="fn">chapters_done</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="blt">self</span>.__chapters
+
+    <span class="kw">def</span> <span class="fn">complete_chapter</span>(<span class="blt">self</span>):
+        <span class="kw">if</span> <span class="blt">self</span>.__chapters >= <span class="blt">self</span>._MAX_CHAPTERS:
+            <span class="kw">raise</span> <span class="cls">Exception</span>(<span class="str">"All chapters already done!"</span>)
+        <span class="blt">self</span>.__chapters += <span class="num">1</span>
+        <span class="kw">return</span> <span class="str">f"Chapter {self.__chapters} done. {self._MAX_CHAPTERS - self.__chapters} remaining."</span>
+
+    <span class="kw">def</span> <span class="fn">progress</span>(<span class="blt">self</span>):
+        pct = (<span class="blt">self</span>.__chapters / <span class="blt">self</span>._MAX_CHAPTERS) * <span class="num">100</span>
+        bar = <span class="str">"█"</span> * <span class="blt">self</span>.__chapters + <span class="str">"░"</span> * (<span class="blt">self</span>._MAX_CHAPTERS - <span class="blt">self</span>.__chapters)
+        <span class="kw">return</span> <span class="str">f"{bar} {pct:.0f}%"</span>
+
+    <span class="kw">def</span> <span class="fn">describe</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="str">f"PG: {self.name} | Thesis: {self.__thesis} | {self.progress()}"</span>
+
+
+g = <span class="cls">GradStudent</span>(<span class="str">"Rohan"</span>, <span class="num">201</span>, <span class="str">"ML in Healthcare"</span>, <span class="str">"Dr. Singh"</span>)
+g.complete_chapter()
+g.complete_chapter()
+g.complete_chapter()
+<span class="fn">print</span>(g.describe())</pre>
+    </div>
+    <div class="output-wrap">
+      <div class="output-label">Output</div>
+      <pre>PG: Rohan | Thesis: ML in Healthcare | ███░░░░░ 38%</pre>
+    </div>
+  </div>
+
+  <!-- BREAK 2 -->
+  <div class="break-card">
+    ☕ Break <span>2:00 – 2:10 · 10 minutes</span>
+  </div>
+
+  <!-- SESSION 3 -->
+  <div class="session-header coral">
+    <div class="badge">Session 3</div>
+    <div class="info">
+      <h2>Advanced OOP + Hands-on Project</h2>
+      <p>2:10 – 2:50 &nbsp;·&nbsp; 40 minutes</p>
+    </div>
+  </div>
+
+  <!-- 3.1 Abstraction -->
+  <div class="topic">
+    <div class="topic-title">Topic 1 · 8 min</div>
+    <h3>Abstraction with Abstract Base Classes</h3>
+    <p>Abstraction hides implementation details and exposes only what's necessary. <code>ABC</code> forces subclasses to implement specific methods — you can't skip them.</p>
+    <div class="code-wrap">
+      <div class="code-label">example_8_abstraction.py</div>
+      <pre><span class="kw">from</span> abc <span class="kw">import</span> ABC, abstractmethod
+
+<span class="kw">class</span> <span class="cls">Person</span>(<span class="cls">ABC</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="blt">self</span>, name):
+        <span class="blt">self</span>.name = name
+
+    <span class="dec">@abstractmethod</span>
+    <span class="kw">def</span> <span class="fn">describe</span>(<span class="blt">self</span>):
+        <span class="cm">"""Every subclass MUST implement this."""</span>
+        <span class="kw">pass</span>
+
+    <span class="dec">@abstractmethod</span>
+    <span class="kw">def</span> <span class="fn">calculate_fee</span>(<span class="blt">self</span>):
+        <span class="kw">pass</span>
+
+    <span class="cm"># Concrete method — shared by all subclasses</span>
+    <span class="kw">def</span> <span class="fn">greet</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="str">f"Hello, I am {self.name}."</span>
+
+
+<span class="kw">class</span> <span class="cls">Student</span>(<span class="cls">Person</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="blt">self</span>, name, program):
+        <span class="fn">super</span>().__init__(name)
+        <span class="blt">self</span>.program = program
+
+    <span class="kw">def</span> <span class="fn">describe</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="str">f"Student: {self.name} | {self.program}"</span>
+
+    <span class="kw">def</span> <span class="fn">calculate_fee</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="num">80_000</span>
+
+
+<span class="kw">class</span> <span class="cls">Professor</span>(<span class="cls">Person</span>):
+    <span class="kw">def</span> <span class="fn">describe</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="str">f"Professor: {self.name}"</span>
+
+    <span class="kw">def</span> <span class="fn">calculate_fee</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="num">0</span>   <span class="cm"># no fee for faculty</span>
+
+
+<span class="cm"># Person() → TypeError: Can't instantiate abstract class</span>
+s = <span class="cls">Student</span>(<span class="str">"Aanya"</span>, <span class="str">"B.Tech CSE"</span>)
+p = <span class="cls">Professor</span>(<span class="str">"Dr. Mehta"</span>)
+<span class="fn">print</span>(s.describe())        <span class="cm"># Student: Aanya | B.Tech CSE</span>
+<span class="fn">print</span>(s.calculate_fee())   <span class="cm"># 80000</span>
+<span class="fn">print</span>(p.greet())           <span class="cm"># Hello, I am Dr. Mehta.  (concrete method inherited)</span></pre>
+    </div>
+  </div>
+
+  <!-- 3.2 Multiple Inheritance & MRO -->
+  <div class="topic">
+    <div class="topic-title">Topic 2 · 7 min</div>
+    <h3>Multiple Inheritance &amp; MRO</h3>
+    <p>Python supports inheriting from multiple parents. The <strong>Method Resolution Order (MRO)</strong> — determined by the C3 linearisation algorithm — defines the lookup order. Use <code>ClassName.__mro__</code> to inspect it.</p>
+    <div class="code-wrap">
+      <div class="code-label">example_9_mro.py</div>
+      <pre><span class="kw">class</span> <span class="cls">Researcher</span>:
+    <span class="kw">def</span> <span class="fn">publish</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="str">f"{self.name} published a paper"</span>
+
+    <span class="kw">def</span> <span class="fn">role</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="str">"Researcher"</span>
+
+
+<span class="kw">class</span> <span class="cls">TeachingAssistant</span>:
+    <span class="kw">def</span> <span class="fn">conduct_lab</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="str">f"{self.name} is conducting a lab"</span>
+
+    <span class="kw">def</span> <span class="fn">role</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="str">"TA"</span>
+
+
+<span class="cm"># Multiple inheritance: ResearchScholar inherits from BOTH</span>
+<span class="kw">class</span> <span class="cls">ResearchScholar</span>(<span class="cls">Student</span>, <span class="cls">Researcher</span>, <span class="cls">TeachingAssistant</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="blt">self</span>, name, roll_no):
+        <span class="cls">Student</span>.__init__(<span class="blt">self</span>, name, roll_no)   <span class="cm"># explicit call</span>
+
+
+rs = <span class="cls">ResearchScholar</span>(<span class="str">"Priya"</span>, <span class="num">501</span>)
+<span class="fn">print</span>(rs.publish())        <span class="cm"># Priya published a paper</span>
+<span class="fn">print</span>(rs.conduct_lab())    <span class="cm"># Priya is conducting a lab</span>
+<span class="fn">print</span>(rs.role())           <span class="cm"># "Student" — MRO picks Student.role() first? No — Student</span>
+                            <span class="cm"># doesn't define .role(), so Researcher wins</span>
+
+<span class="cm"># Inspect the lookup order</span>
+<span class="fn">print</span>([c.__name__ <span class="kw">for</span> c <span class="kw">in</span> <span class="cls">ResearchScholar</span>.__mro__])
+<span class="cm"># ['ResearchScholar', 'Student', 'Researcher', 'TeachingAssistant', 'object']</span></pre>
+    </div>
+    <div class="insight"><strong>Rule of thumb:</strong> Prefer composition over multiple inheritance when possible. Use multiple inheritance only for true "is-a-kind-of-both" relationships.</div>
+  </div>
+
+  <!-- 3.3 Mini Project -->
+  <div class="topic">
+    <div class="topic-title">Mini Project · 20 min</div>
+    <h3>Build: Classroom Manager</h3>
+  </div>
+
+  <div class="project-box">
+    <h3>🎯 Student Task</h3>
+    <p>Complete the Classroom class using the starter code below. Add your own Student objects and test all methods.</p>
+    <ul class="todo-list">
+      <li>Add students and verify duplicates are rejected</li>
+      <li>Compute class average and find the topper</li>
+      <li>Generate a formatted report for all students</li>
+      <li><strong>Bonus:</strong> Add a method to remove a student by roll number</li>
+    </ul>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-label">starter_classroom.py — Skeleton with TODOs</div>
+    <pre><span class="cm"># ── Use the Student class from Session 1 as-is ──</span>
+
+<span class="kw">class</span> <span class="cls">Classroom</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="blt">self</span>, section, max_strength=<span class="num">60</span>):
+        <span class="blt">self</span>.section      = section
+        <span class="blt">self</span>.max_strength = max_strength
+        <span class="blt">self</span>.__students   = []         <span class="cm"># private list</span>
+
+    <span class="kw">def</span> <span class="fn">add_student</span>(<span class="blt">self</span>, student):
+        <span class="cm"># TODO: reject if max_strength reached</span>
+        <span class="cm"># TODO: reject duplicate roll numbers</span>
+        <span class="kw">pass</span>
+
+    <span class="kw">def</span> <span class="fn">get_student</span>(<span class="blt">self</span>, roll_no):
+        <span class="cm"># TODO: return student with matching roll_no, else None</span>
+        <span class="kw">pass</span>
+
+    <span class="kw">def</span> <span class="fn">class_average</span>(<span class="blt">self</span>):
+        <span class="cm"># TODO: return mean of all students' average marks</span>
+        <span class="kw">pass</span>
+
+    <span class="kw">def</span> <span class="fn">topper</span>(<span class="blt">self</span>):
+        <span class="cm"># TODO: return student with highest average</span>
+        <span class="kw">pass</span>
+
+    <span class="kw">def</span> <span class="fn">full_report</span>(<span class="blt">self</span>):
+        <span class="cm"># TODO: print report() for every student</span>
+        <span class="kw">pass</span>
+
+    <span class="kw">def</span> <span class="fn">__len__</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="fn">len</span>(<span class="blt">self</span>.__students)
+
+    <span class="kw">def</span> <span class="fn">__str__</span>(<span class="blt">self</span>):
+        <span class="kw">return</span> <span class="str">f"Classroom {self.section} | {len(self)} students"</span></pre>
+  </div>
+
+  <div class="code-wrap" style="margin-top:0">
+    <div class="code-label">solution_classroom.py — Full working solution</div>
+    <pre><span class="kw">class</span> <span class="cls">Classroom</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="blt">self</span>, section, max_strength=<span class="num">60</span>):
+        <span class="blt">self</span>.section      = section
+        <span class="blt">self</span>.max_strength = max_strength
+        <span class="blt">self</span>.__students   = []
+
+    <span class="kw">def</span> <span class="fn">add_student</span>(<span class="blt">self</span>, student):
+        <span class="kw">if</span> <span class="fn">len</span>(<span class="blt">self</span>.__students) >= <span class="blt">self</span>.max_strength:
+            <span class="kw">raise</span> <span class="cls">Exception</span>(<span class="str">"Classroom is full!"</span>)
+        <span class="kw">if</span> <span class="blt">self</span>.get_student(student.roll_no):
+            <span class="kw">raise</span> <span class="cls">ValueError</span>(<span class="str">f"Roll {student.roll_no} already exists"</span>)
+        <span class="blt">self</span>.__students.append(student)
+
+    <span class="kw">def</span> <span class="fn">get_student</span>(<span class="blt">self</span>, roll_no):
+        <span class="kw">return</span> <span class="fn">next</span>((s <span class="kw">for</span> s <span class="kw">in</span> <span class="blt">self</span>.__students <span class="kw">if</span> s.roll_no == roll_no), <span class="kw">None</span>)
+
+    <span class="kw">def</span> <span class="fn">class_average</span>(<span class="blt">self</span>):
+        avgs = [s.average() <span class="kw">for</span> s <span class="kw">in</span> <span class="blt">self</span>.__students <span class="kw">if</span> s.marks]
+        <span class="kw">return</span> <span class="fn">sum</span>(avgs) / <span class="fn">len</span>(avgs) <span class="kw">if</span> avgs <span class="kw">else</span> <span class="num">0.0</span>
+
+    <span class="kw">def</span> <span class="fn">topper</span>(<span class="blt">self</span>):
+        students_with_marks = [s <span class="kw">for</span> s <span class="kw">in</span> <span class="blt">self</span>.__students <span class="kw">if</span> s.marks]
+        <span class="kw">if not</span> students_with_marks: <span class="kw">return</span> <span class="kw">None</span>
+        <span class="kw">return</span> <span class="fn">max</span>(students_with_marks, key=<span class="kw">lambda</span> s: s.average())
+
+    <span class="kw">def</span> <span class="fn">full_report</span>(<span class="blt">self</span>):
+        <span class="fn">print</span>(<span class="str">f"\n{'='*50}"</span>)
+        <span class="fn">print</span>(<span class="str">f"  CLASSROOM {self.section} REPORT"</span>)
+        <span class="fn">print</span>(<span class="str">f"{'='*50}"</span>)
+        <span class="kw">for</span> s <span class="kw">in</span> <span class="blt">self</span>.__students:
+            <span class="fn">print</span>(s.report())
+            <span class="fn">print</span>(<span class="str">"-"*40</span>)
+        t = <span class="blt">self</span>.topper()
+        <span class="fn">print</span>(<span class="str">f"\n🏆 Topper: {t.name} ({t.average():.1f})"</span> <span class="kw">if</span> t <span class="kw">else</span> <span class="str">"No marks yet"</span>)
+        <span class="fn">print</span>(<span class="str">f"📊 Class Average: {self.class_average():.1f}"</span>)
+
+    <span class="kw">def</span> <span class="fn">__len__</span>(<span class="blt">self</span>):  <span class="kw">return</span> <span class="fn">len</span>(<span class="blt">self</span>.__students)
+    <span class="kw">def</span> <span class="fn">__str__</span>(<span class="blt">self</span>):  <span class="kw">return</span> <span class="str">f"Classroom {self.section} | {len(self)} students"</span>
+
+
+<span class="cm"># --- Run it ---</span>
+room = <span class="cls">Classroom</span>(<span class="str">"A"</span>)
+
+s1 = <span class="cls">Student</span>(<span class="str">"Aanya"</span>, <span class="num">101</span>)
+s2 = <span class="cls">Student</span>(<span class="str">"Rohan"</span>, <span class="num">102</span>)
+s3 = <span class="cls">Student</span>(<span class="str">"Meera"</span>, <span class="num">103</span>)
+
+<span class="kw">for</span> mark <span class="kw">in</span> [<span class="num">88</span>, <span class="num">74</span>, <span class="num">95</span>]: s1.add_mark(<span class="str">"Sub"</span>, mark)
+<span class="kw">for</span> mark <span class="kw">in</span> [<span class="num">60</span>, <span class="num">55</span>, <span class="num">70</span>]: s2.add_mark(<span class="str">"Sub"</span>, mark)
+<span class="kw">for</span> mark <span class="kw">in</span> [<span class="num">92</span>, <span class="num">98</span>, <span class="num">89</span>]: s3.add_mark(<span class="str">"Sub"</span>, mark)
+
+room.add_student(s1)
+room.add_student(s2)
+room.add_student(s3)
+room.full_report()</pre>
+  </div>
+  <div class="output-wrap">
+    <div class="output-label">Output</div>
+    <pre>==================================================
+  CLASSROOM A REPORT
+==================================================
+=== Report: Aanya (Roll 101) ===
+  Sub: 88 | Sub: 74 | Sub: 95
+  Average: 85.7  |  Grade: A
+----------------------------------------
+=== Report: Rohan (Roll 102) ===
+  Sub: 60 | Sub: 55 | Sub: 70
+  Average: 61.7  |  Grade: B
+----------------------------------------
+=== Report: Meera (Roll 103) ===
+  Sub: 92 | Sub: 98 | Sub: 89
+  Average: 93.0  |  Grade: A+
+----------------------------------------
+
+🏆 Topper: Meera (93.0)
+📊 Class Average: 80.1</pre>
+  </div>
+
+  <!-- WRAP-UP -->
+  <hr>
+  <div class="wrapup">
+    <h2>Wrap-up · 2:50 – 3:00</h2>
+    <ul>
+      <li>Class = blueprint, Object = instance. <code>__init__</code> and <code>self</code> are always there</li>
+      <li>Encapsulation: use <code>__private</code> + <code>@property</code> to control access</li>
+      <li>Inheritance: <code>super()</code> chains back to parent; child can override any method</li>
+      <li>Polymorphism: same interface, different behaviour — the power of OOP</li>
+      <li>Abstraction: <code>ABC</code> + <code>@abstractmethod</code> enforces contracts in your hierarchy</li>
+      <li>MRO determines method lookup in multiple inheritance — always check with <code>__mro__</code></li>
+    </ul>
+    <p style="margin-top:14px;font-size:0.85rem;color:var(--muted)"><strong style="color:var(--text)">Next class suggestion:</strong> Design Patterns (Singleton, Factory, Observer) — all built on OOP.</p>
+  </div>
+
+</div>
+</body>
+</html>
